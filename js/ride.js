@@ -15,7 +15,14 @@ WildRydes.map = WildRydes.map || {};
         alert(error);
         window.location.href = '/signin.html';
     });
+
     function requestUnicorn(pickupLocation) {
+        // Guard against missing pickup location (prevents "nothing happens" due to JS error)
+        if (!pickupLocation || pickupLocation.latitude == null || pickupLocation.longitude == null) {
+            alert('Please click on the map to choose your pickup location first.');
+            return;
+        }
+
         $.ajax({
             method: 'POST',
             url: _config.api.invokeUrl + '/ride',
@@ -77,8 +84,14 @@ WildRydes.map = WildRydes.map || {};
     }
 
     function handleRequestClick(event) {
-        var pickupLocation = WildRydes.map.selectedPoint;
         event.preventDefault();
+
+        var pickupLocation = WildRydes.map.selectedPoint;
+        if (!pickupLocation) {
+            alert('Click on the map first to set your pickup location.');
+            return;
+        }
+
         requestUnicorn(pickupLocation);
     }
 
